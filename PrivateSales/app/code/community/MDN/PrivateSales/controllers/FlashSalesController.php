@@ -61,15 +61,22 @@ class MDN_PrivateSales_FlashSalesController extends Mage_Adminhtml_Controller_Ac
             $uploader->setAllowedExtensions(array('jpg', 'jpeg'));
             $uploader->setAllowRenameFiles(true);
             $uploader->setFilesDispersion(true);
+
+            $path = Mage::helper('PrivateSales/FlashSales')->getImageDirectory();
+            if(!file_exists($path)) {
+              mkdir($path, 0777, true);
+            }
+
             $result = $uploader->save(
                             Mage::helper('PrivateSales/FlashSales')->getImageDirectory()
             );
-            $data['fs_picture'] = Mage::helper('PrivateSales/FlashSales')->getImageDirectoryName() . DS . $result['file'];
+            $data['fs_picture'] = Mage::helper('PrivateSales/FlashSales')->getImageDirectoryName() . $result['file'];
         } catch (Exception $ex) {
             //nothing, error raised if no img selected
             unset($data['fs_picture']);
+            Mage::log('fileup error: ' . $ex->getMessage() , null, 'PrivateSalesController.log');
         }
-        
+
         $model = mage::getModel('PrivateSales/FlashSales');
         if ($flashSaleId)
             $model->load($flashSaleId);

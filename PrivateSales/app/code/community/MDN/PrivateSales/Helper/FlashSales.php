@@ -16,14 +16,15 @@ class MDN_PrivateSales_Helper_FlashSales extends Mage_Core_Helper_Abstract
 {
 
 	public function getImageDirectory()
-	{	
-		$path = Mage::getStoreConfig('system/filesystem/media').DS.$this->getImageDirectoryName().DS;
+	{
+		// $path = Mage::getStoreConfig('system/filesystem/media').DS.$this->getImageDirectoryName().DS;
+		$path = Mage::getBaseDir('media') . DS . $this->getImageDirectoryName().DS;
 		return $path;
 	}
-	
+
 	public function getImageDirectoryName()
 	{
 		return 'flash_sales';
 	}
-	
+
 }

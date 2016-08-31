@@ -5,15 +5,15 @@
             <version>1.5.8</version>
         </MDN_PrivateSales>
     </modules>
-    
-    <global>    
+
+    <global>
         <rewrite>
             <MDN_PrivateSales_Catalog_Category_View>
                 <from><![CDATA[#^/catalog/category/view/#]]></from>
                 <to>/PrivateSales/Category/View/</to>
             </MDN_PrivateSales_Catalog_Category_View>
         </rewrite>
-	
+
         <blocks>
             <PrivateSales>
                 <class>MDN_PrivateSales_Block</class>
@@ -35,7 +35,7 @@
             </PrivateSales>
         </helpers>
         <models>
-   	   		            
+
             <PrivateSales>
                 <class>MDN_PrivateSales_Model</class>
                 <resourceModel>PrivateSales_mysql4</resourceModel>
@@ -52,7 +52,7 @@
                     </FlashSales>
                 </entities>
             </PrivateSales_mysql4>
-                       
+
         </models>
         <resources>
             <PrivateSales_setup>
@@ -75,7 +75,7 @@
                 </connection>
             </PrivateSales_read>
         </resources>
-        
+
         <events>
             <controller_action_predispatch>
                 <observers>
@@ -96,11 +96,11 @@
                 </observers>
             </test_upcomingfs> -->
         </events>
-        
+
     </global>
-    
-    <adminhtml>      
-    
+
+    <adminhtml>
+
         <menu>
             <customer>
                 <children>
@@ -120,8 +120,8 @@
                     </flash_sales>
                 </children>
             </sales>
-        </menu>  
-      
+        </menu>
+
         <translate>
             <modules>
                 <MDN_PrivateSales>
@@ -131,7 +131,7 @@
                 </MDN_PrivateSales>
             </modules>
         </translate>
-        
+
         <layout>
             <updates>
                 <PrivateSales>
@@ -139,7 +139,7 @@
                 </PrivateSales>
             </updates>
         </layout>
-        
+
         <acl>
             <resources>
                 <admin>
@@ -186,7 +186,7 @@
         </routers>
 
     </adminhtml>
-    
+
     <frontend>
         <routers>
             <PrivateSales>
@@ -197,7 +197,7 @@
                 </args>
             </PrivateSales>
         </routers>
-        
+
         <layout>
             <updates>
                 <PrivateSales>
@@ -215,9 +215,9 @@
                 </MDN_PrivateSales>
             </modules>
         </translate>
-        
+
     </frontend>
-    
+
     <admin>
         <routers>
             <PrivateSales>
@@ -239,7 +239,7 @@
                     cms/page/view
                     customer/account/logoutsuccess
                 </exceptions>
-                <redirect>hello</redirect> <!-- changey by Florian Greinus - PrivateSales/Restricted before -->
+                <redirect>aktionen</redirect> <!-- changey by Florian Greinus - PrivateSales/Restricted before -->
                 <public_cms_page>public</public_cms_page>
             </general>
             <invitations>
@@ -257,5 +257,5 @@
             </abbreviations>
         </privatesales>
     </default>
-    
+
 </config>
