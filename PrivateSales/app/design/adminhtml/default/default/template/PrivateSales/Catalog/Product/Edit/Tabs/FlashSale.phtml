@@ -1,0 +1,19 @@
+<div class="entry-edit"> 
+    <div class="entry-edit-head"> 
+    <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('Flash sale'); ?></h4> 
+	</div>
+	<div class="fieldset">
+		<?php if (!$this->hasFlashSale()): ?>
+			<?php echo $this->__('This product has no flash sale'); ?>
+		<?php else: ?>
+			<p>
+				<?php echo $this->__('This product is associated to a flash sale :'); ?>	
+				<ul>
+					<li><a href="<?php echo $this->getFlashSaleUrl(); ?>"><?php echo $this->getFlashSale()->getfs_name(); ?></a>
+					<li><?php echo $this->__('Starts at %s', $this->helper('core')->formatDate($this->getFlashSale()->getfs_start_date(), 'medium', true)); ?>
+					<li><?php echo $this->__('Ends at %s', $this->helper('core')->formatDate($this->getFlashSale()->getfs_end_date(), 'medium', true)); ?>
+				</ul>
+			</p>
+		<?php endif; ?>
+	</div>
+</div> 

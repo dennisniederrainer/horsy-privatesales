@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+            
+    <privatesales_invitations_index>
+        <reference name="content">
+            <block type="PrivateSales/Admin_Invitations_Create" name="invitationscreate" template="PrivateSales/Invitations/Create.phtml">
+           </block>
+            <block type="PrivateSales/Admin_Invitations_Grid" name="invitationsgrid" template="PrivateSales/Invitations/Grid.phtml">
+           </block>
+        </reference>
+    </privatesales_invitations_index>       
+    
+	<!-- flash sales -->
+    <privatesales_flashsales_list>
+        <reference name="content">
+  	        <block type="PrivateSales/Admin_FlashSales_List" name="fs_list" as="fs_list" template="PrivateSales/FlashSales/List.phtml"/>
+        </reference>	
+    </privatesales_flashsales_list>
+
+	
+</layout>

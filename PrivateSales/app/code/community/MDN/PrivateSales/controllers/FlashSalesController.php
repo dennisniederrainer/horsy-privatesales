@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @copyright  Copyright (c) 2009 Maison du Logiciel (http://www.maisondulogiciel.com)
+ * @author : Olivier ZIMMERMANN
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+class MDN_PrivateSales_FlashSalesController extends Mage_Adminhtml_Controller_Action {
+
+    public function ListAction() {
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
+    public function EditAction() {
+        $flashSaleId = $this->getRequest()->getParam('fs_id');
+        if ($flashSaleId)
+            mage::register('current_flash_sale', mage::getModel('PrivateSales/FlashSales')->load($flashSaleId));
+
+        $this->loadLayout()
+                ->_addContent($this->getLayout()->createBlock('PrivateSales/Admin_FlashSales_Edit'))
+                ->renderLayout();
+    }
+
+    public function saveAction() {
+        $flashSaleId = $this->getRequest()->getPost('fs_id');
+
+        $data = $this->getRequest()->getPost();
+
+        //merge date & time
+        $format = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
+        $startTime = implode(':', $data['fs_start_time']);
+        if ($date = $data['fs_start_date']) {
+            $date = Mage::app()->getLocale()->date($date, $format, null, false);
+            $data['fs_start_date'] = $date->toString(Varien_Date::DATETIME_INTERNAL_FORMAT);
+        } else {
+            $data['fs_start_date'] = new Zend_Db_Expr('null');
+        }
+        $data['fs_start_date'] = str_replace('00:00:00', $startTime, $data['fs_start_date']);
+
+        $endTime = implode(':', $data['fs_end_time']);
+        if ($date = $data['fs_end_date']) {
+            $date = Mage::app()->getLocale()->date($date, $format, null, false);
+            $data['fs_end_date'] = $date->toString(Varien_Date::DATETIME_INTERNAL_FORMAT);
+        } else {
+            $data['fs_end_date'] = new Zend_Db_Expr('null');
+        }
+        $data['fs_end_date'] = str_replace('00:00:00', $endTime, $data['fs_end_date']);
+
+        //Save picture
+        try {
+            $uploader = new Varien_File_Uploader('fs_picture');
+            $uploader->setAllowedExtensions(array('jpg', 'jpeg'));
+            $uploader->setAllowRenameFiles(true);
+            $uploader->setFilesDispersion(true);
+            $result = $uploader->save(
+                            Mage::helper('PrivateSales/FlashSales')->getImageDirectory()
+            );
+            $data['fs_picture'] = Mage::helper('PrivateSales/FlashSales')->getImageDirectoryName() . DS . $result['file'];
+        } catch (Exception $ex) {
+            //nothing, error raised if no img selected
+            unset($data['fs_picture']);
+        }
+        
+        $model = mage::getModel('PrivateSales/FlashSales');
+        if ($flashSaleId)
+            $model->load($flashSaleId);
+
+        $model->setData($data);
+
+        $model->save();
+
+        Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Data saved'));
+        $this->_redirect('PrivateSales/FlashSales/Edit', array('fs_id' => $model->getId()));
+    }
+
+    public function DeleteAction() {
+
+        $flashSaleId = $this->getRequest()->getParam('fs_id');
+        $model = mage::getModel('PrivateSales/FlashSales')->load($flashSaleId);
+        $model->delete();
+
+        Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Flash sale deleted'));
+        $this->_redirect('PrivateSales/FlashSales/List');
+    }
+}

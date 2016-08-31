@@ -1,0 +1,253 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @copyright  Copyright (c) 2009 Maison du Logiciel (http://www.maisondulogiciel.com)
+ * @author : Olivier ZIMMERMANN
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+class MDN_PrivateSales_Helper_Data extends Mage_Core_Helper_Abstract
+{
+	private $_codeLength = 8;
+	
+	/**
+	 * main function, check if user can see page, if not, redirect
+	 *
+	 */
+	public function checkForRedirect()
+	{
+        if(!Mage::getSingleton('customer/session')->isLoggedIn()){
+            $email = Mage::app()->getRequest()->getParam("email");
+            $hash_token = Mage::app()->getRequest()->getParam("hash_token");
+
+            $customer = Mage::getModel("customer/customer");
+            $customer->setWebsiteId(Mage::app()->getWebsite()->getId());
+            $customer->loadByEmail($email);
+
+            $customerID = $customer->getId();
+            $customerHashToken = hash('md5', $customerID);
+            if($hash_token == $customerHashToken)
+            {
+                Mage::getSingleton('customer/session')->loginById($customerID);
+            }
+        }
+		try 
+		{
+			$request = Mage::app()->getRequest();
+			$enable = mage::getStoreConfig('privatesales/general/enable', Mage::app()->getStore());
+			
+			//if we are already on rediction, return false
+			if (($request->getModuleName() == 'PrivateSales') && ($request->getControllerName() == 'Restricted'))
+				return null;
+			
+			//if customer logged in
+			if (Mage::getSingleton('customer/session')->isLoggedIn())
+				return null;
+				
+			//if private sales enabled and page is exception
+			if ($enable)
+			{
+				if (!$this->urlIsException($request))
+					return $this->getRedirectUrl();
+			}
+			
+			//if we are at category level and category is not private
+			if ($this->isCategoryView($request))
+			{
+				$categoryId = mage::app()->getRequest()->getParam('id');
+				if ($this->categoryIsPrivate($categoryId))
+					return $this->getRedirectUrl();
+			}
+			
+		}
+		catch (Exception $ex)
+		{
+			mage::log('Private Sales : an error occured in Private Sales checkForRedirect() : '.$ex->getMessage());
+			return false;
+		}
+		return '';
+	}
+	
+	private function getRedirectUrl()
+	{
+		$url = mage::getStoreConfig('privatesales/general/redirect');
+		return explode('/', $url);
+	}
+	
+	/**
+	 * check if an url is an exception
+	 *
+	 * @param unknown_type $url
+	 */
+	private function urlIsException($request)
+	{
+		
+		//init vars
+		$module = strtolower($request->getModuleName());
+		$controller = strtolower($request->getControllerName());
+		$action = strtolower($request->getActionName());
+		$exceptions = mage::getStoreConfig('privatesales/general/exceptions', Mage::app()->getStore());
+		$exceptions = strtolower($exceptions);
+		$t_exceptions = explode("\n", $exceptions);
+		
+		$totalPath = $module.'/'.$controller.'/'.$action;
+		
+		//specific exception (to prevent from 100 front reach)
+		if ($totalPath == 'customer/account/logoutSuccess')
+			return true;
+		
+		//check if request belong to exceptions
+		foreach($t_exceptions as $exception)
+		{
+			$exception = str_replace(chr(10), '', $exception);
+			$exception = str_replace(chr(13), '', $exception);
+			
+			//split info
+			$t = explode('/', $exception);	
+			if (count($t) != 3)
+			{
+				continue;
+			}
+			
+			//check
+			$moduleMatch = false;
+			if (($t[0] == '*') || ($t[0] == $module))
+			{
+				$moduleMatch = true;
+			}
+			$controllerMatch = false;
+			if (($t[1] == '*') || ($t[1] == $controller))
+			{
+				$controllerMatch = true;
+			}
+			$actionMatch = false;
+			if (($t[2] == '*') || ($t[2] == $action))
+			{
+				$actionMatch = true;
+			}
+
+			if ($moduleMatch && $controllerMatch && $actionMatch)
+			{
+				mage::log('Url '.$totalPath.' is not exception');
+				return true;
+			}
+		}
+
+		mage::log('Url '.$totalPath.' is not exception');
+		return false;
+	}
+	
+	/**
+	 * Generate a code to send invitation
+	 *
+	 */
+	public function generateCode()
+	{
+		$code = '';
+		$codeDoNotExist = false;
+		while(!$codeDoNotExist)
+		{
+			//create code
+			$code = '';
+			for($i=0;$i<$this->_codeLength;$i++)
+			{
+				$code .= rand(0, 9);
+			}
+			
+			//check if code exists
+			$collection = mage::getModel('PrivateSales/Invitation')
+							->getCollection()
+							->addFieldToFilter('psi_code', $code);			
+			$codeDoNotExist = ($collection->getSize() == 0);
+		}
+		return $code;
+	}
+	
+	/**
+	 * Check if activation code matches to email
+	 *
+	 * @param unknown_type $email
+	 * @param unknown_type $code
+	 */
+	public function checkActivationCode($email, $code)
+	{
+		$collection = mage::getModel('PrivateSales/Invitation')
+						->getCollection()
+						->addFieldToFilter('psi_email', $email)
+						->addFieldToFilter('psi_code', $code);
+		return ($collection->getSize() > 0);
+	}
+	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $email
+	 */
+	public function storeAccountCreation($email)
+	{
+		$collection = mage::getModel('PrivateSales/Invitation')
+						->getCollection()
+						->addFieldToFilter('psi_email', $email);
+		foreach ($collection as $item)
+			$item->setpsi_used(1)->save();
+		
+	}
+	
+	/**
+	 * Return true if we try to view category
+	 */
+	public function isCategoryView($request)
+	{
+		$module = strtolower($request->getModuleName());
+		$controller = strtolower($request->getControllerName());
+		$action = strtolower($request->getActionName());
+
+		if (($module == 'catalog') && ($controller == 'category') && ($action == 'view'))
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * Check if category is private
+	 */
+	public function categoryIsPrivate($categoryId)
+	{
+		$category = mage::getModel('catalog/category')->load($categoryId);
+		if ($category->getId())
+		{
+			if ($category->getis_private())
+				return true;
+			else
+			{
+				//browse category path to check if category belongs to a private category
+				$path = $category->getpath();
+				$parentIds = explode('/', $path);
+				$collection = mage::getModel('catalog/category')
+										->getCollection()
+										->addFieldToFilter('entity_id', array('in' => $parentIds))
+										->addAttributeToSelect('is_private');
+				foreach($collection as $parent)
+				{
+					if ($parent->getis_private())
+						return true;				
+				}
+			}
+		}
+		return false;
+	}
+
+	
+	public function requireActivationCode()
+	{
+		return (mage::getStoreConfig('privatesales/account/require_activation_code') == 1);
+	}
+
+}
+?>

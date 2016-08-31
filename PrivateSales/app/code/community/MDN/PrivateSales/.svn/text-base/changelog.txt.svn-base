@@ -1,0 +1,15 @@
+_________________________________________________________________________________________________________________
+v1.5.3
+
+- Fix issue with split function under PHP 5.3
+- Add adminhtml.xml
+
+_________________________________________________________________________________________________________________
+v1.5.2
+
+- New feature to manage product sale time limit, display countdown on product sheet, automatically change product visibility depending of start and end date
+
+_________________________________________________________________________________________________________________
+v1.5.1
+
+- New feature to allow customer to send invitation with invitation count limit (settings in system > config > private sales (website scope))

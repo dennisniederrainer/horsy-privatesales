@@ -1,0 +1,37 @@
+
+<div class="content-header">
+    <table cellspacing="0" class="grid-header">
+        <tr>
+            <td><h3><?php echo $this->__('Invite customers')?></h3></td>
+            <td align="right">
+                <button onclick="document.getElementById('invite_form').submit()" class="scalable save" type="button"><span><?php echo $this->__('Send invitation(s)')?></span></button>            
+            </td>
+        </tr>
+    </table>
+</div>
+
+<form id="invite_form" name="invite_form" method="post" action="<?php echo $this->getSubmitUrl()?>">
+<input id="form_key" name="form_key" type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>" />
+<div class="entry-edit">
+<fieldset id="my-fieldset">
+            <table cellspacing="0"class="form-list">
+                <tr>
+                    <td class="label" width="20%"><?php echo $this->__('Store'); ?> </td>
+                    <td class="input-ele" width="80%"><?php echo $this->getStoresAsCombo('store'); ?></td>
+                </tr>
+                <tr>
+                    <td class="label" width="20%"><?php echo $this->__('From'); ?> </td>
+                    <td class="input-ele" width="80%"><input type="text" name="from" id="from" size="50"></td>
+                </tr>
+                <tr>
+                    <td class="label" width="20%"><?php echo $this->__('Email(s)'); ?> </td>
+                    <td class="input-ele" width="80%"><textarea id="emails" name="emails" cols="50" rows="5"></textarea> <i><?php echo $this->__('Separate emails with ;'); ?></i></td>
+                </tr>
+                <tr>
+                    <td class="label" width="20%"><?php echo $this->__('Message'); ?> </td>
+                    <td class="input-ele" width="80%"><textarea id="msg" name="msg" cols="50" rows="5"></textarea></td>
+                </tr>
+            </table>
+</fieldset>
+</div>
+</form>

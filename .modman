@@ -1,0 +1,5 @@
+PrivateSales/app/code/community/MDN/PrivateSales								app/code/community/MDN/PrivateSales
+PrivateSales/app/design/adminhtml/default/default/layout/PrivateSales.xml		app/design/adminhtml/default/default/layout/PrivateSales.xml
+PrivateSales/app/design/adminhtml/default/default/template/PrivateSales			app/design/adminhtml/default/default/template/PrivateSales
+PrivateSales/app/etc/modules/MDN_PrivateSales.xml								app/etc/modules/MDN_PrivateSales.xml
+PrivateSales/js/mdn/PrivateSales.js												js/mdn/PrivateSales.js

@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<config>
+		<menu>
+            <customer>
+                <children>
+                    <privatesales_invitation translate="title" module="PrivateSales">
+                        <title>Private Sales - Invitations</title>
+                        <action>PrivateSales/Invitations</action>
+                        <sort_order>900</sort_order>
+                    </privatesales_invitation>
+                </children>
+             </customer>
+			<sales>
+				<children>
+					<flash_sales module="PrivateSales">
+						<title>Flash Sales</title>
+					</flash_sales>
+				</children>
+			</sales>
+        </menu>  
+      
+        <translate>
+            <modules>
+                <MDN_PrivateSales>
+                    <files>
+                        <default>MDN_PrivateSales.csv</default>
+                    </files>
+                </MDN_PrivateSales>
+            </modules>
+        </translate>
+        
+       	<layout>
+            <updates>
+                <PrivateSales>
+                    <file>PrivateSales.xml</file>
+                </PrivateSales>
+            </updates>
+        </layout>
+        
+		<acl>
+	        <resources>
+	            <admin>
+	                <children>
+	                    <system>
+	                        <children>
+	                            <config>
+	                                <children>
+	                                    <privatesales module="PrivateSales">
+											<title>Private Sales</title>
+	                                    </privatesales>
+	                                </children>
+	                            </config>
+	                        </children>
+	                    </system>
+	                    <customer>
+	                    	<children>
+	                    		<privatesales_invitation module="PrivateSales">
+	                    			<title>Private sales Invitations</title>
+	                    		</privatesales_invitation>
+	                    	</children>
+	                    </customer>
+	                    <sales>
+	                    	<children>
+	                    		<flash_sales module="PrivateSales">
+	                    			<title>Flash Sales</title>
+	                    		</flash_sales>
+	                    	</children>
+	                    </sales>
+	                </children>
+	            </admin>
+	         </resources>
+	    </acl>
+
+
+        <routers>
+            <PrivateSales>
+                <use>standard</use>
+                <args>
+                    <module>MDN_PrivateSales</module>
+                    <frontName>PrivateSales</frontName>
+                </args>
+            </PrivateSales>
+        </routers>
+
+</config>

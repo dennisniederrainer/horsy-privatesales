@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <MDN_PrivateSales>
+            <version>1.5.8</version>
+        </MDN_PrivateSales>
+    </modules>
+    
+    <global>    
+	
+        <rewrite>
+            <MDN_PrivateSales_Catalog_Category_View>
+                <from><![CDATA[#^/catalog/category/view/#]]></from>
+                <to>/PrivateSales/Category/View/</to>
+            </MDN_PrivateSales_Catalog_Category_View>
+        </rewrite>
+	
+        <blocks>
+            <PrivateSales>
+                <class>MDN_PrivateSales_Block</class>
+            </PrivateSales>
+            <adminhtml>
+				<rewrite>
+					<catalog_product_edit_tabs>MDN_PrivateSales_Block_Admin_Catalog_Product_Edit_Tabs</catalog_product_edit_tabs>
+				</rewrite>
+			</adminhtml>
+			<catalog>
+				<rewrite>
+					<product_view>MDN_PrivateSales_Block_Front_Catalog_Product_View</product_view>
+				</rewrite>
+			</catalog>
+		</blocks>
+    	<helpers>
+            <PrivateSales>
+                <class>MDN_PrivateSales_Helper</class>
+            </PrivateSales>
+        </helpers>
+  	   	<models>
+   	   		            
+            <PrivateSales>
+                <class>MDN_PrivateSales_Model</class>
+                <resourceModel>PrivateSales_mysql4</resourceModel>
+            </PrivateSales>
+
+            <PrivateSales_mysql4>
+                <class>MDN_PrivateSales_Model_Mysql4</class>
+                <entities>
+                    <Invitation>
+                        <table>private_sales_invitation</table>
+                    </Invitation>
+					<FlashSales>
+						<table>private_sales_flash_sales</table>
+					</FlashSales>
+                </entities>
+            </PrivateSales_mysql4>
+                       
+   	   </models>
+    	<resources>
+        	<PrivateSales_setup>
+				<setup>
+					<module>MDN_PrivateSales</module>
+					<class>Mage_Catalog_Model_Resource_Eav_Mysql4_Setup</class>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</PrivateSales_setup>
+            <PrivateSales_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </PrivateSales_write>
+            <PrivateSales_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </PrivateSales_read>
+        </resources>
+        
+        <events>
+			<controller_action_predispatch>
+                <observers>
+                    <PrivateSales>
+                        <type>singleton</type>
+                        <class>PrivateSales/Observer</class>
+                        <method>controller_action_predispatch</method>
+                    </PrivateSales>
+                </observers>
+            </controller_action_predispatch>
+        </events>
+        
+    </global>
+    
+    <adminhtml>      
+    
+		<menu>
+            <customer>
+                <children>
+                    <privatesales_invitation translate="title" module="PrivateSales">
+                        <title>Private Sales - Invitations</title>
+                        <action>PrivateSales/Invitations</action>
+                        <sort_order>900</sort_order>
+                    </privatesales_invitation>
+                </children>
+             </customer>
+            <sales>
+                <children>
+                    <flash_sales translate="title" module="PrivateSales">
+                        <title>Flash Sales</title>
+                        <action>PrivateSales/FlashSales/List</action>
+                        <sort_order>900</sort_order>
+                    </flash_sales>
+                </children>
+             </sales>
+        </menu>  
+      
+        <translate>
+            <modules>
+                <MDN_PrivateSales>
+                    <files>
+                        <default>MDN_PrivateSales.csv</default>
+                    </files>
+                </MDN_PrivateSales>
+            </modules>
+        </translate>
+        
+       	<layout>
+            <updates>
+                <PrivateSales>
+                    <file>PrivateSales.xml</file>
+                </PrivateSales>
+            </updates>
+        </layout>
+        
+		<acl>
+	        <resources>
+	            <admin>
+	                <children>
+	                    <system>
+	                        <children>
+	                            <config>
+	                                <children>
+	                                    <privatesales module="PrivateSales">
+											<title>Private Sales</title>
+	                                    </privatesales>
+	                                </children>
+	                            </config>
+	                        </children>
+	                    </system>
+	                    <customer>
+	                    	<children>
+	                    		<privatesales_invitation module="PrivateSales">
+	                    			<title>Private sales Invitations</title>
+	                    		</privatesales_invitation>
+	                    	</children>
+	                    </customer>
+	                    <sales>
+	                    	<children>
+	                    		<flash_sales module="PrivateSales">
+	                    			<title>Flash Sales</title>
+	                    		</flash_sales>
+	                    	</children>
+	                    </sales>
+	                </children>
+	            </admin>
+	         </resources>
+	    </acl>
+
+
+        <routers>
+            <PrivateSales>
+                <use>standard</use>
+                <args>
+                    <module>MDN_PrivateSales</module>
+                    <frontName>PrivateSales</frontName>
+                </args>
+            </PrivateSales>
+        </routers>
+
+    </adminhtml>
+    
+    <frontend>
+        <routers>
+            <PrivateSales>
+                <use>standard</use>
+                <args>
+                    <module>MDN_PrivateSales</module>
+                    <frontName>PrivateSales</frontName>
+                </args>
+            </PrivateSales>
+        </routers>
+        
+        <layout>
+            <updates>
+                <PrivateSales>
+                    <file>PrivateSales.xml</file>
+                </PrivateSales>
+            </updates>
+        </layout>
+
+        <translate>
+            <modules>
+                <MDN_PrivateSales>
+                    <files>
+                        <default>MDN_PrivateSales.csv</default>
+                    </files>
+                </MDN_PrivateSales>
+            </modules>
+        </translate>
+        
+	</frontend>
+    
+    <admin>
+    	<routers>
+            <PrivateSales>
+                <use>admin</use>
+                <args>
+                    <module>MDN_PrivateSales</module>
+                    <frontName>PrivateSales</frontName>
+                </args>
+            </PrivateSales>
+        </routers>
+    </admin>
+
+    <default>
+    	<privatesales>
+    		<general>
+    			<enable>0</enable>
+    			<exceptions>
+privatesales/*/*
+cms/page/view
+customer/account/logoutsuccess
+    			</exceptions>
+    			<redirect>home</redirect> <!-- changey by Florian Greinus - PrivateSales/Restricted before -->
+    			<public_cms_page>public</public_cms_page>
+    		</general>
+    		<invitations>
+    			<enable_customer_invitation>0</enable_customer_invitation>
+    			<customer_invitation_count>10</customer_invitation_count>
+    		</invitations>
+			<account>
+				<require_activation_code>1</require_activation_code>
+			</account>
+			<abbreviations>
+				<days> days</days>
+				<hours> h</hours>
+				<minutes> min</minutes>
+				<seconds> sec</seconds>
+			</abbreviations>
+    	</privatesales>
+    </default>
+
+</config>
